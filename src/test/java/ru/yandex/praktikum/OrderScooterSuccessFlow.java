@@ -7,9 +7,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import pageObject.OrderPage;
+import steps.Steps;
 
 import java.time.Duration;
 import java.util.Date;
@@ -19,7 +21,8 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 @RunWith(Parameterized.class)
 public class OrderScooterSuccessFlow {
 
-    private final String buttonOrder;
+    private WebDriver webDriver;
+    private final By buttonOrder;
     private final String firstName;
     private final String lastName;
     private final String city;
@@ -28,10 +31,9 @@ public class OrderScooterSuccessFlow {
 
     private static final String urlScooterServiceMainPage = "https://qa-scooter.praktikum-services.ru/";
 
-    private WebDriver webDriver;
+    private static final By buttonOrderInHeaderPage = OrderPage.buttonOrderInHeaderPage;
 
-
-
+    private static final By getButtonOrderInFooterPage = OrderPage.getButtonOrderInFooterPage;
 
     @Before
     public void setup() {
@@ -44,13 +46,13 @@ public class OrderScooterSuccessFlow {
     @Parameterized.Parameters
     public static Object[][] getCredentials() {
         return new Object[][]{
-                {".//button[@class='Button_Button__ra12g' and text()='Заказать']",
+                {buttonOrderInHeaderPage,
                         "Алекс",
                         "Ширшов",
                         "Санкт-Петербург",
                         "79991112233",
                         "Комментарий"},
-                {".//button[@class='Button_Button__ra12g Button_Middle__1CSJM' and text()='Заказать']",
+                {getButtonOrderInFooterPage,
                         "Петр-Петров",
                         "Shirshov",
                         "Москва",
@@ -59,7 +61,7 @@ public class OrderScooterSuccessFlow {
         };
     }
 
-    public OrderScooterSuccessFlow(String buttonOrder, String firstName, String lastName, String city, String phone, String commentCourier) {
+    public OrderScooterSuccessFlow(By buttonOrder, String firstName, String lastName, String city, String phone, String commentCourier) {
         this.buttonOrder = buttonOrder;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -72,11 +74,12 @@ public class OrderScooterSuccessFlow {
     @Description("Проверяем успешный заказ самоката: заполнение двух форм + подтвреждение заказа")
     public void checkFlowOrderScooter() {
         OrderPage objOrderPage = new OrderPage(webDriver);
-        objOrderPage.goToUrl(urlScooterServiceMainPage);
-        webDriver.manage().window().maximize();
+        Steps steps = new Steps(webDriver);
+        steps.goToUrl(urlScooterServiceMainPage);
+        steps.windowMaximize();
         objOrderPage.waitDownloadPage(objOrderPage.headerElementInMainPage);
         objOrderPage.clickElement(objOrderPage.cookieButton);
-        objOrderPage.clickElementByXpath(buttonOrder);
+        objOrderPage.clickElement(buttonOrder);
         objOrderPage.waitDownloadPage(objOrderPage.headerPageOrder);
         objOrderPage.inputDataFirstForm(firstName, lastName, city, phone);
         objOrderPage.clickElement(objOrderPage.buttonContinue);
@@ -92,14 +95,13 @@ public class OrderScooterSuccessFlow {
     @Description("Проверяем отображение ошибки у полей заказа самоката")
     public void shouldErrorInInputOnFormOrder() {
         OrderPage objOrderPage = new OrderPage(webDriver);
-        objOrderPage.goToUrl(urlScooterServiceMainPage);
-        webDriver.manage().window().maximize();
+        Steps steps = new Steps(webDriver);
+        steps.goToUrl(urlScooterServiceMainPage);
+        steps.windowMaximize();
         objOrderPage.waitDownloadPage(objOrderPage.headerElementInMainPage);
-        objOrderPage.clickElementByXpath(buttonOrder);
+        objOrderPage.clickElement(buttonOrder);
 
     }
-
-
 
     public int getPlusDays() {
         current = DateUtils.addDays(current, 1);
@@ -107,7 +109,7 @@ public class OrderScooterSuccessFlow {
     }
 
     @After
-    public void teardown() {
+    public void tearDown() {
         webDriver.quit();
     }
 }

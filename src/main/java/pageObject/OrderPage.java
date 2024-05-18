@@ -12,6 +12,10 @@ public class OrderPage {
 
     private final WebDriver webDriver;
 
+    public static By buttonOrderInHeaderPage = By.xpath(".//button[@class='Button_Button__ra12g' and text()='Заказать']");
+
+    public static By getButtonOrderInFooterPage = By.xpath(".//button[@class='Button_Button__ra12g Button_Middle__1CSJM' and text()='Заказать']");
+
     public By headerElementInMainPage = By.xpath(".//div[@class='Home_Header__iJKdX']");
 
     public By headerPageOrder = By.xpath(".//div[text()='Для кого самокат']");
@@ -60,19 +64,10 @@ public class OrderPage {
         this.webDriver = driver;
     }
 
-    public void goToUrl(String URL) {
-        webDriver.get(URL);
-    }
-
     public void waitDownloadPage(By element) {
         new WebDriverWait(webDriver, Duration.ofSeconds(6))
                 .until(ExpectedConditions.visibilityOfElementLocated(element));
     }
-
-    public void clickElementByXpath(String element) {
-        webDriver.findElement(By.xpath(element)).click();
-    }
-
     public void inputDataFirstForm(String firstName, String lastName, String city, String phone) {
         webDriver.findElement(inputFirstName).sendKeys(firstName);
         webDriver.findElement(inputLastName).sendKeys(lastName);

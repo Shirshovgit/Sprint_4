@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import pageObject.OrderPage;
+import steps.Steps;
 
 import java.time.Duration;
 
@@ -41,8 +42,9 @@ public class CheckErrorInInputFormOrder {
     @Description("Проверяем отображение ошибки у полей формы заказа")
     public void shouldErrorInInputOnFirstFormOrder() {
         OrderPage objOrderPage = new OrderPage(webDriver);
-        objOrderPage.goToUrl(urlScooterServiceMainPage);
-        webDriver.manage().window().maximize();
+        Steps steps = new Steps(webDriver);
+        steps.goToUrl(urlScooterServiceMainPage);
+        steps.windowMaximize();
         objOrderPage.waitDownloadPage(objOrderPage.headerElementInMainPage);
         objOrderPage.clickElement(objOrderPage.buttonOrderInMainPage);
         objOrderPage.inputDataFirstFormWithoutMetroSelect(
@@ -58,7 +60,7 @@ public class CheckErrorInInputFormOrder {
 
 
     @After
-    public void teardown() {
+    public void tearDown() {
 
         webDriver.quit();
     }
